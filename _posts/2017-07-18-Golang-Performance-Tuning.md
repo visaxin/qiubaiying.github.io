@@ -81,47 +81,35 @@ return buf.Bytes(), err}
 
 ```
 func (b *Buffer) ReadFrom(r io.Reader) (n int64, err error) {
-
-b.lastRead = opInvalid // If buffer is empty, reset to recover space. if b.off >= len(b.buf) {
-
-b.Reset()
-
-}
-
-for {
-
-if free := cap(b.buf) - len(b.buf); free < MinRead {
-
-// not enough space at end newBuf := b.buf if b.off+free < MinRead {
-
-// not enough space using beginning of buffer; // double buffer capacity newBuf = makeSlice(2*cap(b.buf) + MinRead)
-
-}
-
-copy(newBuf, b.buf[b.off:])
-
-b.buf = newBuf[:len(b.buf)-b.off]
-
-b.off = 0 }
-
-m, e := r.Read(b.buf[len(b.buf):cap(b.buf)])
-
-b.buf = b.buf[0 : len(b.buf)+m]
-
-n += int64(m)
-
-if e == io.EOF {
-
-break }
-
-if e != nil {
-
-return n, e }
-
-}
-
-return n, nil // err is EOF, so return nil explicitly
-
+	b.lastRead = opInvalid
+	// If buffer is empty, reset to recover space.
+	if b.off >= len(b.buf) {
+		b.Reset()
+	}
+	for {
+		if free := cap(b.buf) - len(b.buf); free < MinRead {
+			// not enough space at end
+			newBuf := b.buf
+			if b.off+free < MinRead {
+				// not enough space using beginning of buffer;
+				// double buffer capacity
+				newBuf = makeSlice(2*cap(b.buf) + MinRead)
+			}
+			copy(newBuf, b.buf[b.off:])
+			b.buf = newBuf[:len(b.buf)-b.off]
+			b.off = 0
+		}
+		m, e := r.Read(b.buf[len(b.buf):cap(b.buf)])
+		b.buf = b.buf[0 : len(b.buf)+m]
+		n += int64(m)
+		if e == io.EOF {
+			break
+		}
+		if e != nil {
+			return n, e
+		}
+	}
+	return n, nil // err is EOF, so return nil explicitly
 }
 ```
 
