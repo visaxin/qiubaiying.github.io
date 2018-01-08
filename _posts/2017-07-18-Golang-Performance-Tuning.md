@@ -29,6 +29,7 @@ go version go1.9.2 linux/amd64
 runtime mallocgc 占用了17.96%的CPU。 SVG部分图如下
 
 ![SVG CPU Profile](../blog_img/cpu.jpg)
+
 ![SVG CPU Profile](../blog_img/cpu-g.jpg)
 
 
