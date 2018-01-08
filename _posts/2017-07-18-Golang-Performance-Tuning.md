@@ -164,3 +164,6 @@ return
 }
 body := buf.Bytes()
 ```
+
+这个修改后的效率和在我的一个开源社区PR中有体现
+[PR-669](https://github.com/olivere/elastic/pull/669)
