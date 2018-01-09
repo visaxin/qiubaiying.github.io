@@ -167,3 +167,4 @@ body := buf.Bytes()
 
 这个修改后的效率和在我的一个开源社区PR中有体现
 [PR-669](https://github.com/olivere/elastic/pull/669)
+[AUTHOR-PR](https://github.com/olivere/elastic/commit/73dc423a60d3491c4cf80ba28145b03115a33b6a)
