@@ -43,7 +43,8 @@ ioutil.ReadAll -> buffer.ReadFrom -> makeSlice -> malloc.go
 
 readAll()方法
 
-```
+```go
+
 func readAll(r io.Reader, capacity int64) (b []byte, err error) {
 
 buf := bytes.NewBuffer(make([]byte, 0, capacity))
@@ -79,7 +80,8 @@ return buf.Bytes(), err}
 再进入核心的方法。 buf.ReadFrom()
 
 
-```
+```go
+
 func (b *Buffer) ReadFrom(r io.Reader) (n int64, err error) {
 	b.lastRead = opInvalid
 	// If buffer is empty, reset to recover space.
@@ -134,7 +136,8 @@ func (b *Buffer) ReadFrom(r io.Reader) (n int64, err error) {
 使用一个 buffer的pool可以解决问题。参考在shadowsocks在leakybuf中实现，并且针对业务来做了如下修改。
 
 
-```
+```go
+
 // Put add the buffer into the free buffer pool for reuse. Panic if the buffer// size is not the same with the leaky buffer's. This is intended to expose// error usage of leaky buffer.func (lb *LeakyBuf) Put(b []byte) {
 if len(b) != lb.bufSize {
 // 源码中panic，这里为了防止[]byte数组被修改后放进来，是默认重新赋值为默认的大小
@@ -150,7 +153,8 @@ const leakyBufSize = 5 * 1024 * 1024 // 5MB 根据统计，解决大部分请求
 
 代替ioutil.ReadAll的代码如下
 
-```
+```go
+
 cacheBuf := leakyBuf.Get()
 
 defer leakyBuf.Put(cacheBuf) // 用完后放回去
